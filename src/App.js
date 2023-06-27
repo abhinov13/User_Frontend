@@ -1,23 +1,149 @@
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
 import './App.css';
+import Users from './Components/Users.js';
+import axios from 'axios';
+import Display from './Components/Display';
+import DisplayUser from './Components/DisplayUser';
 
-function App() {
+const getData = (setallUsersJson) => {  
+  axios.get('http://localhost:8080/getAllUsers')
+  .then(function (response) {
+    console.log(response);
+    setallUsersJson(response.data);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+};
+
+const postData = (data,setallUsersJson) =>
+{
+  const obj = {
+    id: data.id,
+    name: data.name,
+    email: data.email,
+    phone_no: data.phone_no
+  };
+  axios.post('http://localhost:8080/user',obj)
+  .then(function (response){
+    console.log(response);
+    getData(setallUsersJson);
+  })
+  .catch(function (error){
+    console.log(error);
+  });
+}
+
+const putData = (data,setallUsersJson) =>
+{
+  const obj = {
+    id: data.id,
+    name: data.name,
+    email: data.email,
+    phone_no: data.phone_no
+  };
+  console.log("inside update");
+  console.log(obj);
+  
+  axios.put('http://localhost:8080/updateUser/' + obj.id,obj)
+  .then(function (response){
+    console.log(response);
+    getData(setallUsersJson);
+  })
+  .catch(function (error)
+  {
+    console.log(error);
+  })
+}
+
+const deleteData = (user,setallUsersJson) =>
+{
+  console.log("deleting");
+  console.log(user);
+  axios.delete('http://localhost:8080/updateUser/'+user.id)
+  .then(function(response)
+  {
+    console.log(response);
+    getData(setallUsersJson);
+  })
+  .catch(function(error)
+  {
+    console.log(error);
+  });
+}
+
+function App() {  
+  const [allUsersJson,setallUsersJson] = useState({});
+  const [userForm,setUserForm] = useState(false);
+  const [allUsers,setAllUsers] = useState(true);
+  const [user,setUser] = useState({name: "",email: "",phone_no: ""});
+  const [update,setUpdate] = useState(false);
+  
+  useEffect(
+    () => {
+      getData(setallUsersJson);
+    },
+    []
+  );
+
+  useEffect(
+    () => {
+      console.log(user);
+    },
+    [user]
+  );
+
+  const switchToUserForm_add = () =>
+  {
+    setUpdate(false);
+    setUser({name: "",email: "",phone_no: ""});
+    setUserForm(true);
+    setAllUsers(false);
+  }
+  const switchToUserForm_update = (user) =>
+  {
+    setUpdate(true);
+    setUser(user);
+    setUserForm(true);
+    setAllUsers(false);
+  }
+  const switchToAllUsers = () =>
+  {
+    setUserForm(false);
+    setAllUsers(true);
+  }
+
+  const addUser = () =>
+  {
+    console.log(user);
+    postData(user,setallUsersJson);
+    switchToAllUsers();
+  }
+  const updateUser = () =>
+  {
+    console.log(user);
+    putData(user,setallUsersJson);
+    switchToAllUsers();
+  }
+  const deleteUser = (user) =>
+  {
+    deleteData(user,setallUsersJson);
+
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <Users switchMethod={switchToUserForm_add}/>
+    
+    <div className="viewSingleUser" style={{display: userForm? "block" : "none"}}>
+    {update?
+    <DisplayUser switchMethod={switchToAllUsers} user={user} setUser={setUser} isUpdate={true} addUser={addUser} updateUser={updateUser}/>:
+    <DisplayUser switchMethod={switchToAllUsers} user={user} setUser={setUser} isUpdate={false} addUser={addUser} updateUser={updateUser}/>}
+    </div>
+
+    <div className="viewUsers" style={{display: allUsers? "block" : "none"}}>
+    <Display data={allUsersJson} switchMethod={switchToUserForm_update} deleteUser={deleteUser}/>
+    </div>
+
     </div>
   );
 }
