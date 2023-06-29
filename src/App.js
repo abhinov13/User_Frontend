@@ -5,7 +5,7 @@ import axios from 'axios';
 import Display from './Components/Display';
 import DisplayUser from './Components/DisplayUser';
 
-const ip = '16.171.1.104';
+const ip = '13.49.228.212';
 
 const getData = (setallUsersJson) => {  
   axios.get('http://' + ip + ':8080/getAllUsers')
