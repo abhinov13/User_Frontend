@@ -6,7 +6,7 @@ import Display from './Components/Display';
 import DisplayUser from './Components/DisplayUser';
 
 const getData = (setallUsersJson) => {  
-  axios.get('http://localhost:8080/getAllUsers')
+  axios.get('http://13.53.143.121:8080/getAllUsers')
   .then(function (response) {
     console.log(response);
     setallUsersJson(response.data);
@@ -24,7 +24,7 @@ const postData = (data,setallUsersJson) =>
     email: data.email,
     phone_no: data.phone_no
   };
-  axios.post('http://localhost:8080/user',obj)
+  axios.post('http://13.53.143.121:8080/user',obj)
   .then(function (response){
     console.log(response);
     getData(setallUsersJson);
@@ -45,7 +45,7 @@ const putData = (data,setallUsersJson) =>
   console.log("inside update");
   console.log(obj);
   
-  axios.put('http://localhost:8080/updateUser/' + obj.id,obj)
+  axios.put('http://13.53.143.121:8080/updateUser/' + obj.id,obj)
   .then(function (response){
     console.log(response);
     getData(setallUsersJson);
@@ -60,7 +60,7 @@ const deleteData = (user,setallUsersJson) =>
 {
   console.log("deleting");
   console.log(user);
-  axios.delete('http://localhost:8080/updateUser/'+user.id)
+  axios.delete('http://13.53.143.121:8080/deleteUser/'+user.id)
   .then(function(response)
   {
     console.log(response);
@@ -96,7 +96,7 @@ function App() {
   const switchToUserForm_add = () =>
   {
     setUpdate(false);
-    setUser({name: "",email: "",phone_no: ""});
+    setUser({name: "",email: "",phone_no: ""})
     setUserForm(true);
     setAllUsers(false);
   }
@@ -136,8 +136,8 @@ function App() {
     
     <div className="viewSingleUser" style={{display: userForm? "block" : "none"}}>
     {update?
-    <DisplayUser switchMethod={switchToAllUsers} user={user} setUser={setUser} isUpdate={true} addUser={addUser} updateUser={updateUser}/>:
-    <DisplayUser switchMethod={switchToAllUsers} user={user} setUser={setUser} isUpdate={false} addUser={addUser} updateUser={updateUser}/>}
+    <DisplayUser switchMethod={switchToAllUsers} user={user} setUser={setUser} isUpdate={true} addUser={addUser} updateUser={updateUser} back={switchToAllUsers}/>:
+    <DisplayUser switchMethod={switchToAllUsers} user={user} setUser={setUser} isUpdate={false} addUser={addUser} updateUser={updateUser} back={switchToAllUsers}/>}
     </div>
 
     <div className="viewUsers" style={{display: allUsers? "block" : "none"}}>
