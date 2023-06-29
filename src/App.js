@@ -5,8 +5,10 @@ import axios from 'axios';
 import Display from './Components/Display';
 import DisplayUser from './Components/DisplayUser';
 
+const ip = '16.171.1.104';
+
 const getData = (setallUsersJson) => {  
-  axios.get('http://13.53.143.121:8080/getAllUsers')
+  axios.get('http://' + ip + ':8080/getAllUsers')
   .then(function (response) {
     console.log(response);
     setallUsersJson(response.data);
@@ -24,7 +26,7 @@ const postData = (data,setallUsersJson) =>
     email: data.email,
     phone_no: data.phone_no
   };
-  axios.post('http://13.53.143.121:8080/user',obj)
+  axios.post('http://' + ip + ':8080/user',obj)
   .then(function (response){
     console.log(response);
     getData(setallUsersJson);
@@ -45,7 +47,7 @@ const putData = (data,setallUsersJson) =>
   console.log("inside update");
   console.log(obj);
   
-  axios.put('http://13.53.143.121:8080/updateUser/' + obj.id,obj)
+  axios.put('http://' + ip + ':8080/updateUser/' + obj.id,obj)
   .then(function (response){
     console.log(response);
     getData(setallUsersJson);
@@ -60,7 +62,7 @@ const deleteData = (user,setallUsersJson) =>
 {
   console.log("deleting");
   console.log(user);
-  axios.delete('http://13.53.143.121:8080/deleteUser/'+user.id)
+  axios.delete('http://' + ip + ':8080/deleteUser/'+user.id)
   .then(function(response)
   {
     console.log(response);
